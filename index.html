@@ -13,7 +13,7 @@
 		<p id="detail"></p>
 		<script src="static/js/jquery-1.11.2.min.js"></script>
 		<script>
-			var port = window.location.search.slice(1);
+			var port = window.location.search.slice(1) || 80;
 			var testingTitle = '正在测试网络可用性，请稍后……';
 			var failTitle = '稍等，饭掌柜系统正在使劲重连<small id="counting">..</small>';
 			var failMessage = '系统侦测到您连接employee hotspot失败或者信号不稳定。<br><br>或联系<a href="mailto:xi.a.chen@intel.com">xi.a.chen@intel.com</a><br><br><img src="retry.gif" />';
