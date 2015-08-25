@@ -18,7 +18,7 @@
 			var failTitle = '稍等，饭掌柜系统正在使劲重连<small id="counting">..</small>';
 			var failMessage = '系统侦测到您连接employee hotspot失败或者信号不稳定。<br><br>或联系<a href="mailto:xi.a.chen@intel.com">xi.a.chen@intel.com</a><br><br><img src="retry.gif" />';
 			var jumpingTitle = '正在跳转，若长时间无反应请<a href="javascript:jump()">重试</a>';
-			var destUrl = '';
+			var destUrl = null;
 			var testUrlPostfix = "/apiTestConnection";
 			var failedCount = 0;
 			var stop = false;
@@ -28,7 +28,9 @@
 					url: 'http://api.nemoge.com/target.php',
 					timeout: 5000,
 					success: function(data){			
-						$("h1").html(testingTitle);
+						if(!destUrl){
+							$("h1").html(testingTitle);
+						}
 						destUrl = data;
 						test();
 					},
@@ -59,7 +61,7 @@
 						else if(!stop){
 							$("#counting").text($("#counting").text() + '.');
 						}
-						setTimeout(test, 3000);
+						setTimeout(getDestUrl, 3000);
 					}
 				})
 			}
