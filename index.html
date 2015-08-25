@@ -1,3 +1,79 @@
-<script>
-	window.location.replace("http://jump.nemoge.com/?skfan");
-</script>
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>正在跳转</title>
+	</head>
+	<body>
+		<h1>
+			正在获取服务器地址，请稍后……
+		</h1>
+		<p id="detail"></p>
+		<script src="static/js/jquery-1.11.2.min.js"></script>
+		<script>
+			var port = window.location.port;
+			var testingTitle = '正在测试网络可用性，请稍后……';
+			var failTitle = '稍等，饭掌柜系统正在使劲重连<small id="counting">..</small>';
+			var failMessage = '系统侦测到您连接employee hotspot失败或者信号不稳定。<br><br>或联系<a href="mailto:xi.a.chen@intel.com">xi.a.chen@intel.com</a><br><br><img src="retry.gif" />';
+			var jumpingTitle = '正在跳转，若长时间无反应请<a href="javascript:jump()">重试</a>';
+			var destUrl = '';
+			var testUrlPostfix = "/apiTestConnection";
+			var failedCount = 0;
+			var stop = false;
+			
+			var getDestUrl = function(){
+				$.ajax({
+					url: 'http://api.nemoge.com/target.php',
+					timeout: 5000,
+					success: function(data){			
+						$("h1").html(testingTitle);
+						destUrl = data;
+						test();
+					},
+					error: function(){
+						getDestUrl();
+					}
+				})
+			}
+			
+			var test = function(){
+				$.ajax({
+					url: 'http://' + destUrl + ':' + port + testUrlPostfix,
+					timeout: 5000,
+					success: function(){			
+						$("h1").html(jumpingTitle);
+						jump();
+					},
+					error: function(){
+						if(!failedCount){
+							$("h1").html(failTitle);
+							$("#detail").html(failMessage);
+						}
+						failedCount++;
+						if(!stop && failedCount > 100){
+							$("#counting").text($("#counting").text() + '凸(艹皿艹)!');
+							stop = true;
+						}
+						else if(!stop){
+							$("#counting").text($("#counting").text() + '.');
+						}
+						test();
+					}
+				})
+			}
+			
+			var jump = function(){
+				window.location.replace('http://' + destUrl + ':' + port);
+			};
+			
+			var reload = function(){
+				window.location.reload();
+			}
+			
+			getDestUrl();
+		</script>
+	</body>
+
+</html>
